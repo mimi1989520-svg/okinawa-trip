@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>沖繩五天四夜・家族自駕行程</title>
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#182B36;
+    --ink-soft:#4B5C64;
+    --ocean:#1C5D72;
+    --ocean-deep:#12414F;
+    --accent:#1C5D72;
+    --coral:#C8451B;
+    --coral-soft:#F4E3D8;
+    --sand:#FAF3E6;
+    --card:#FFFFFF;
+    --leaf:#4F7A5B;
+    --gold:#B9791E;
+    --line:#E6DAC2;
+    --radius-card:16px;
+    --radius-pill:999px;
+    color-scheme:light;
+  }
+  /* Dark mode: the hero / sticky day-nav / boarding-pass ticket keep their own
+     fixed colors on purpose (they're always a coloured band, not page background),
+     everything else (body text, cards, timeline) swaps to a dark-friendly palette. */
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#EDE7D9;
+      --ink-soft:#A7B4B9;
+      --accent:#5FB4CC;
+      --coral:#FF8F5E;
+      --coral-soft:#2E2118;
+      --sand:#12181B;
+      --card:#1C2528;
+      --leaf:#86C99A;
+      --gold:#E3AE5A;
+      --line:#2C373A;
+      color-scheme:dark;
+    }
+    :root:not([data-theme="light"]) .meal-tag.breakfast{background:#1F2A1D;}
+    :root:not([data-theme="light"]) .meal-tag.lunch{background:#2E2410;}
+    :root:not([data-theme="light"]) .meal-tag.dinner{background:#2A1F2E;color:#D9A0E3;}
+  }
+  :root[data-theme="dark"]{
+    --ink:#EDE7D9;
+    --ink-soft:#A7B4B9;
+    --accent:#5FB4CC;
+    --coral:#FF8F5E;
+    --coral-soft:#2E2118;
+    --sand:#12181B;
+    --card:#1C2528;
+    --leaf:#86C99A;
+    --gold:#E3AE5A;
+    --line:#2C373A;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--sand);
+    color:var(--ink);
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 20px;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:linear-gradient(165deg,var(--ocean) 0%,var(--ocean-deep) 100%);
+    color:#F3EFE4;
+    padding:36px 0 28px;
+  }
+  .hero .wrap{padding:0 24px;}
+  .hero-kicker{
+    font-size:14px;
+    letter-spacing:.02em;
+    color:#BFE0E8;
+    margin:0 0 10px;
+  }
+  .hero h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:26px;
+    line-height:1.5;
+    margin:0 0 16px;
+    max-width:22em;
+  }
+  .hero-dates{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.22);
+    color:#F3EFE4;
+    padding:7px 14px;
+    border-radius:var(--radius-pill);
+    font-size:14px;
+    font-weight:500;
+    margin-bottom:22px;
+  }
+
+  .flight-row{display:flex;flex-direction:column;gap:12px;}
+  .boardingpass{
+    background:#F3EFE4;
+    color:#182B36;
+    border-radius:14px;
+    display:flex;
+    overflow:hidden;
+  }
+  .bp-main{flex:1;padding:14px 14px;}
+  .bp-label{
+    font-size:12px;
+    color:#4B5C64;
+    margin:0 0 8px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .bp-flight{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:7px 0;
+    border-top:1px dashed var(--line);
+  }
+  .bp-flight:first-of-type{border-top:none;}
+  .bp-code{
+    font-weight:700;
+    font-size:14px;
+    min-width:58px;
+  }
+  .bp-code.hl{color:#C8451B;}
+  .bp-time{
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:.01em;
+  }
+  .bp-route{
+    font-size:12px;
+    color:#4B5C64;
+  }
+  .bp-arrow{color:#4B5C64;font-size:13px;}
+
+  /* ---------- Sticky day nav ---------- */
+  .day-nav{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:var(--ocean-deep);
+    box-shadow:0 2px 10px rgba(0,0,0,.12);
+  }
+  .day-nav-scroll{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:10px 20px;
+    scrollbar-width:none;
+  }
+  .day-nav-scroll::-webkit-scrollbar{display:none;}
+  .tab{
+    position:relative;
+    flex:0 0 auto;
+    background:#F3EFE4;
+    color:#182B36;
+    border:none;
+    border-radius:10px;
+    padding:8px 14px 8px 20px;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:700;
+    text-align:left;
+    cursor:pointer;
+    opacity:.62;
+    transition:opacity .15s ease, transform .15s ease;
+  }
+  .tab::before{
+    content:'';
+    position:absolute;
+    left:7px;
+    top:50%;
+    transform:translateY(-50%);
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--ocean-deep);
+  }
+  .tab .tab-date{
+    display:block;
+    font-weight:500;
+    font-size:11px;
+    color:#4B5C64;
+    margin-top:1px;
+  }
+  .tab[aria-selected="true"]{
+    opacity:1;
+    background:#fff;
+    transform:translateY(-1px);
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+  }
+  .tab[aria-selected="true"]::before{background:var(--coral);}
+
+  /* ---------- Panels ---------- */
+  main{padding:24px 0 60px;}
+  .panel{display:none;}
+  .panel.active{
+    display:block;
+    animation:rise .28s ease both;
+  }
+  @keyframes rise{
+    from{opacity:0;transform:translateY(6px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .panel.active{animation:none;}
+  }
+
+  /* Overview panel */
+  .ov-intro{font-size:15px;color:var(--ink-soft);margin:0 0 22px;}
+  .ov-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
+  .ov-item{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-card);
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    cursor:pointer;
+    text-align:left;
+    width:100%;
+    font-family:inherit;
+    color:inherit;
+  }
+  .ov-daynum{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:22px;
+    color:var(--accent);
+    min-width:34px;
+  }
+  .ov-item-body{flex:1;min-width:0;}
+  .ov-item-date{font-size:12px;color:var(--ink-soft);margin:0 0 3px;}
+  .ov-item-tag{font-size:14px;font-weight:500;margin:0;}
+  .ov-item-hotel{font-size:12px;color:var(--leaf);margin:4px 0 0;}
+  .ov-chevron{color:var(--ink-soft);flex:0 0 auto;}
+
+  .ov-note{
+    margin-top:20px;
+    font-size:12px;
+    color:var(--ink-soft);
+    background:var(--coral-soft);
+    border-radius:12px;
+    padding:12px 14px;
+  }
+
+  /* Day panel */
+  .day-head{margin-bottom:20px;}
+  .day-head .d-num{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    color:var(--accent);
+    font-size:14px;
+    margin:0 0 4px;
+  }
+  .day-head h2{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:22px;
+    margin:0 0 8px;
+  }
+  .day-head p{margin:0;color:var(--ink-soft);font-size:14px;}
+
+  .meal-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:var(--radius-pill);
+    margin-bottom:10px;
+  }
+  .meal-tag.breakfast{background:#EAF1E4;color:var(--leaf);}
+  .meal-tag.lunch{background:#FBEFD9;color:var(--gold);}
+  .meal-tag.dinner{background:#EFE1EE;color:#7A4B87;}
+
+  .place-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px 14px;
+    margin-bottom:14px;
+  }
+  .place-card .pc-name{font-weight:700;font-size:15px;}
+  .place-card a.maplink{
+    flex:0 0 auto;
+    font-size:12px;
+    font-weight:700;
+    color:var(--accent);
+    text-decoration:none;
+    border:1px solid var(--accent);
+    padding:6px 10px;
+    border-radius:var(--radius-pill);
+    white-space:nowrap;
+  }
+
+  .timeline{
+    position:relative;
+    margin:0 0 26px;
+    padding-left:2px;
+  }
+  .t-row{
+    position:relative;
+    display:flex;
+    gap:14px;
+    padding:0 0 20px 0;
+  }
+  .t-row:last-child{padding-bottom:0;}
+  .t-rail{
+    position:relative;
+    width:14px;
+    flex:0 0 auto;
+    display:flex;
+    justify-content:center;
+  }
+  .t-rail::before{
+    content:'';
+    position:absolute;
+    top:16px;
+    bottom:-20px;
+    left:50%;
+    width:1px;
+    background:var(--line);
+    transform:translateX(-50%);
+  }
+  .t-row:last-child .t-rail::before{display:none;}
+  .t-dot{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--accent);
+    margin-top:5px;
+    flex:0 0 auto;
+  }
+  .t-row.act-food .t-dot{background:var(--gold);}
+  .t-row.act-nature .t-dot{background:var(--leaf);}
+  .t-body{flex:1;min-width:0;padding-top:0;}
+  .t-time{
+    font-weight:700;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 2px;
+  }
+  .t-text{
+    font-size:15px;
+    font-weight:500;
+    margin:0;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+  }
+  .t-note{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:3px 0 0;
+  }
+  .pin{
+    display:inline-flex;
+    align-items:center;
+    gap:3px;
+    font-size:12px;
+    font-weight:700;
+    color:var(--coral);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+  }
+  .pin:hover{border-bottom-color:var(--coral);}
+  .pin svg{width:12px;height:12px;}
+
+  .hotel-card{
+    background:var(--ocean);
+    color:#F3EFE4;
+    border-radius:var(--radius-card);
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:8px;
+  }
+  .hotel-card .hc-icon{flex:0 0 auto;opacity:.9;}
+  .hotel-card .hc-body{flex:1;min-width:0;}
+  .hotel-card .hc-label{font-size:11px;color:#BFE0E8;margin:0 0 3px;}
+  .hotel-card .hc-name{font-size:15px;font-weight:700;margin:0;}
+  .hotel-card a.hc-link{
+    flex:0 0 auto;
+    font-size:12px;
+    font-weight:700;
+    color:var(--ocean-deep);
+    background:#F3EFE4;
+    text-decoration:none;
+    padding:8px 12px;
+    border-radius:var(--radius-pill);
+    white-space:nowrap;
+  }
+
+  /* Currency converter */
+  .fx-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-card);
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .fx-field label{
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .fx-input-wrap{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:10px 14px;
+    background:var(--sand);
+  }
+  .fx-input-wrap .fx-symbol{
+    font-weight:700;
+    color:var(--accent);
+    font-size:14px;
+    flex:0 0 auto;
+  }
+  .fx-input-wrap input{
+    flex:1;
+    min-width:0;
+    border:none;
+    background:transparent;
+    font-size:22px;
+    font-weight:700;
+    color:var(--ink);
+    font-family:inherit;
+    outline:none;
+  }
+  .fx-swap{
+    align-self:center;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:var(--sand);
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--accent);
+    font-size:14px;
+    font-weight:700;
+  }
+  .fx-rate-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:12px 14px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:16px;
+  }
+  .fx-rate-card input{
+    width:64px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:4px 8px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--ink);
+    background:var(--sand);
+    font-family:inherit;
+  }
+  .fx-rate-card a.fx-check{
+    margin-left:auto;
+    font-size:12px;
+    font-weight:700;
+    color:var(--accent);
+    text-decoration:none;
+    border:1px solid var(--accent);
+    padding:5px 10px;
+    border-radius:var(--radius-pill);
+    white-space:nowrap;
+  }
+  table.fx-table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-card);
+    overflow:hidden;
+    margin-bottom:16px;
+  }
+  table.fx-table th, table.fx-table td{
+    padding:10px 14px;
+    text-align:right;
+    font-size:14px;
+    border-bottom:1px solid var(--line);
+    color:var(--ink);
+  }
+  table.fx-table thead th{
+    color:var(--ink-soft);
+    font-weight:700;
+    font-size:12px;
+  }
+  table.fx-table th:first-child, table.fx-table td:first-child{
+    text-align:left;
+  }
+  table.fx-table td:first-child{color:var(--ink-soft);font-weight:500;}
+  table.fx-table tr:last-child td{border-bottom:none;}
+
+  footer{
+    padding:20px 0 40px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:12px;
+  }
+
+  @media (min-width:700px){
+    .hero h1{font-size:30px;}
+    .flight-row{flex-direction:row;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="hero-kicker">台灣 → 沖繩・家族自駕小旅行</p>
+    <h1>凌晨從桃園出發，落地沖繩後一路往北，再繞回那霸，五天四夜沿著海岸線慢慢走。</h1>
+    <span class="hero-dates">2027.3.12（五）→ 2027.3.16（二）</span>
+    <div class="flight-row">
+      <div class="boardingpass">
+        <div class="bp-main">
+          <p class="bp-label">✈ 去程・台北 → 沖繩</p>
+          <div class="bp-flight">
+            <span class="bp-code">IT230</span>
+            <span class="bp-time">06:35 → 08:55</span>
+          </div>
+          <div class="bp-flight">
+            <span class="bp-code hl">BR112</span>
+            <span class="bp-time">06:55 → 09:15</span>
+          </div>
+        </div>
+      </div>
+      <div class="boardingpass">
+        <div class="bp-main">
+          <p class="bp-label">✈ 回程・沖繩 → 台北</p>
+          <div class="bp-flight">
+            <span class="bp-code hl">BR185</span>
+            <span class="bp-time">20:10 → 20:55</span>
+          </div>
+          <div class="bp-flight">
+            <span class="bp-code">IT233</span>
+            <span class="bp-time">21:30 → 22:05</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="day-nav" aria-label="選擇日期">
+  <div class="day-nav-scroll" id="dayNavScroll"></div>
+</nav>
+
+<main class="wrap" id="panels"></main>
+
+<footer>
+  📍 地圖連結為 Google 地圖搜尋結果，出發前建議再次核對實際地點與營業時間。
+</footer>
+
+<script>
+const ICONS = {
+  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-7.58 7-12.5A7 7 0 0 0 5 9.5C5 14.42 12 22 12 22z"/><circle cx="12" cy="9.5" r="2.3"/></svg>',
+  chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+  bed: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7"/><path d="M3 18v2M21 18v2M3 13h18"/><path d="M7 13V9a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v4"/></svg>'
+};
+
+function mapUrl(q){
+  return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+}
+function mapHref(obj){
+  return obj.mapHref || (obj.map ? mapUrl(obj.map) : null);
+}
+
+const trip = {
+  outbound: [
+    {code:'IT230', time:'06:35 → 08:55'},
+    {code:'BR112', time:'06:55 → 09:15', hl:true}
+  ],
+  ret: [
+    {code:'BR185', time:'20:10 → 20:55', hl:true},
+    {code:'IT233', time:'21:30 → 22:05'}
+  ]
+};
+
+const days = [
+  {
+    id:'d1', num:1, date:'2027/3/12', weekday:'五',
+    tag:'凌晨出發，落地沖繩直奔海邊，晚上住進殘波岬',
+    breakfast:null,
+    morning:[
+      {time:'01:30', text:'起床'},
+      {time:'02:30', text:'機場接送出發'},
+      {time:'04:30', text:'抵達桃園機場', map:'台灣桃園國際機場'},
+      {flights:trip.outbound, caption:'去程班機・抵達沖繩那霸機場'},
+      {time:'11:00', text:'取車完畢'}
+    ],
+    lunch:{place:'第一牧志公設市場', map:'第一牧志公設市場 那霸', items:[
+      {time:'14:00', text:'波上宮', map:'波上宮 那霸', kind:'nature'},
+      {time:'15:30', text:'泊城公園（渡具知海灘）', mapHref:'https://maps.app.goo.gl/oTYbMTUY6Cjxq8v68', note:'廖宇智溜滑梯放電', kind:'nature'},
+      {time:'16:00', text:'超市大採購', mapHref:'https://maps.app.goo.gl/GeWNeVTg4yV9QV2k9'},
+      {time:'17:00', text:'飯店 Check in'}
+    ]},
+    dinner:{place:'花笠食堂 殘波店', map:'花笠食堂 殘波店', items:[
+      {time:'19:00', text:'飯店泡湯娛樂'}
+    ]},
+    hotel:{name:'殘波岬美爵度假酒店', map:'殘波岬美爵度假酒店'}
+  },
+  {
+    id:'d2', num:2, date:'2027/3/13', weekday:'六',
+    tag:'美麗海水族館看一整天魚，再一路開車到名護',
+    breakfast:{place:'飯店早餐'},
+    morning:[
+      {time:'08:30', text:'飯店出發', note:'行李要上車'},
+      {time:'09:30', text:'許田休息站', mapHref:'https://maps.app.goo.gl/V4tWgGeEd3nxfMJ18'},
+      {time:'10:30', text:'美麗海水族館', map:'沖繩美麗海水族館', kind:'nature'}
+    ],
+    lunch:{place:'自備麵包', items:[
+      {time:'16:30', text:'要離開前往聚餐'},
+      {time:'17:30', text:'抵達百年古家'}
+    ]},
+    dinner:{place:'百年古家 大家 阿古豬', map:'百年古家 大家 名護', items:[
+      {time:'19:00', text:'唐吉訶德 名護店', map:'唐吉訶德 名護店', kind:'nature'}
+    ]},
+    hotel:{name:'Little Island Okinawa Nago', map:'Little Island Okinawa Nago'}
+  },
+  {
+    id:'d3', num:3, date:'2027/3/14', weekday:'日',
+    tag:'美國村晃一整天，晚上國際通續攤',
+    breakfast:{place:'麥當勞 名護宮里店', mapHref:'https://maps.app.goo.gl/WhVugVow512RnWUK9'},
+    morning:[
+      {time:'08:30', text:'飯店出發', note:'行李要上車'},
+      {time:'08:40', text:'抵達麥當勞'},
+      {time:'10:30', text:'美國村', map:'美國村 沖繩', kind:'nature'}
+    ],
+    lunch:{place:'美國村迴轉壽司', items:[
+      {time:'15:00', text:'國際通商圈', map:'國際通 那霸', kind:'nature'}
+    ]},
+    dinner:{place:'暖暮拉麵 那霸牧志店', map:'暖暮拉麵 那霸牧志店', items:[
+      {time:'19:00', text:'國際通商圈', map:'國際通 那霸', kind:'nature'}
+    ]},
+    hotel:{name:'那霸城市公寓聯合之家', mapHref:'https://maps.app.goo.gl/GUCch1Z7J49nNawd8'}
+  },
+  {
+    id:'d4', num:4, date:'2027/3/15', weekday:'一',
+    tag:'首里觀音堂加水族館，晚上燒肉收工',
+    breakfast:{place:'Kameshima Pan Maejima', map:'Kameshima Pan Maejima 沖繩'},
+    morning:[
+      {time:'08:30', text:'飯店出發'},
+      {time:'09:00', text:'達摩寺（首里觀音堂）', mapHref:'https://maps.app.goo.gl/WvFdBzQS1FNrWr9A6', kind:'nature'},
+      {time:'10:00', text:'離開達摩寺'},
+      {time:'10:30', text:'DMM水族館', map:'DMMかりゆし水族館', kind:'nature'}
+    ],
+    lunch:{place:'A&W 漢堡 / IIAS 美食街', items:[
+      {time:'13:00', text:'IIAS百貨公司（+Outlet）', map:'iias沖縄豊崎', kind:'nature'}
+    ]},
+    dinner:{place:'燒肉きんぐ 那霸久茂地店', map:'燒肉きんぐ 那霸久茂地店', items:[
+      {time:'19:00', text:'永旺 那霸店', map:'AEON 那霸店', kind:'nature'}
+    ]},
+    hotel:{name:'那霸城市公寓聯合之家', mapHref:'https://maps.app.goo.gl/GUCch1Z7J49nNawd8'}
+  },
+  {
+    id:'d5', num:5, date:'2027/3/16', weekday:'二',
+    tag:'南部走透透，瀨長島看夕陽後飛回台灣',
+    breakfast:{place:'何惠珍特製早餐'},
+    morning:[
+      {time:'08:30', text:'飯店出發', note:'行李要上車'},
+      {time:'09:30', text:'琉球王國 + 玉泉洞', map:'琉球王國村 玉泉洞', kind:'nature'},
+      {time:'10:30', text:'有太鼓表演'},
+      {time:'11:30', text:'奧武島', map:'奧武島 沖繩', kind:'nature'}
+    ],
+    lunch:{place:'中本天婦羅店', map:'中本天婦羅店 沖繩', items:[
+      {time:'14:00', text:'瀨長島', mapHref:'https://maps.app.goo.gl/nPA4p1en5p7Hb5oVA', kind:'nature'},
+      {time:'15:00', text:'幸福鬆餅（沖繩店）', map:'幸福鬆餅 沖繩', kind:'food'},
+      {time:'16:40', text:'要離開瀨長島'},
+      {time:'17:00', text:'OTS 還車', mapHref:'https://maps.app.goo.gl/P9rtv5RHGYyes7s18'},
+      {time:'17:30', text:'抵達 OKA 沖繩機場', map:'那霸機場'}
+    ]},
+    dinner:{place:'機場晚餐', items:[
+      {flights:trip.ret, caption:'回程班機・飛回台北'}
+    ]},
+    hotel:null
+  }
+];
+
+function flightCardHTML(item){
+  const rows = item.flights.map(f => `
+    <div class="bp-flight">
+      <span class="bp-code${f.hl ? ' hl' : ''}">${f.code}</span>
+      <span class="bp-time">${f.time}</span>
+    </div>`).join('');
+  return `
+  <div class="t-row">
+    <div class="t-rail"><div class="t-dot" style="background:var(--coral)"></div></div>
+    <div class="t-body">
+      <div class="boardingpass" style="border:1px solid var(--line)">
+        <div class="bp-main">
+          <p class="bp-label">✈ ${item.caption}</p>
+          ${rows}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function timelineRowHTML(item){
+  if(item.flights) return flightCardHTML(item);
+  const kindClass = item.kind === 'nature' ? ' act-nature' : (item.kind === 'food' ? ' act-food' : '');
+  const href = mapHref(item);
+  const pin = href ? `<a class="pin" href="${href}" target="_blank" rel="noopener">${ICONS.pin}地圖</a>` : '';
+  const note = item.note ? `<p class="t-note">${item.note}</p>` : '';
+  return `
+  <div class="t-row${kindClass}">
+    <div class="t-rail"><div class="t-dot"></div></div>
+    <div class="t-body">
+      <p class="t-time">${item.time}</p>
+      <p class="t-text">${item.text}${pin}</p>
+      ${note}
+    </div>
+  </div>`;
+}
+
+function mealBlockHTML(mealType, label, meal){
+  if(!meal) return '';
+  const place = meal.place ? `
+    <div class="place-card">
+      <span class="pc-name">${meal.place}</span>
+      ${meal.map || meal.mapHref ? `<a class="maplink" href="${mapHref(meal)}" target="_blank" rel="noopener">開啟地圖</a>` : ''}
+    </div>` : '';
+  const items = (meal.items || []).map(timelineRowHTML).join('');
+  return `
+    <span class="meal-tag ${mealType}">${label}</span>
+    ${place}
+    ${items ? `<div class="timeline">${items}</div>` : ''}
+  `;
+}
+
+function dayPanelHTML(d){
+  const breakfastHTML = d.breakfast ? `
+    <span class="meal-tag breakfast">早餐</span>
+    <div class="place-card">
+      <span class="pc-name">${d.breakfast.place}</span>
+      ${d.breakfast.map || d.breakfast.mapHref ? `<a class="maplink" href="${mapHref(d.breakfast)}" target="_blank" rel="noopener">開啟地圖</a>` : ''}
+    </div>` : '';
+
+  const morningHTML = d.morning ? `<div class="timeline">${d.morning.map(timelineRowHTML).join('')}</div>` : '';
+
+  const hotelHTML = d.hotel ? `
+    <div class="hotel-card">
+      <span class="hc-icon">${ICONS.bed}</span>
+      <div class="hc-body">
+        <p class="hc-label">今晚住宿</p>
+        <p class="hc-name">${d.hotel.name}</p>
+      </div>
+      <a class="hc-link" href="${mapHref(d.hotel)}" target="_blank" rel="noopener">導航</a>
+    </div>` : '';
+
+  return `
+    <div class="day-head">
+      <p class="d-num">Day ${d.num}</p>
+      <h2>${d.date}（${d.weekday}）</h2>
+      <p>${d.tag}</p>
+    </div>
+    ${breakfastHTML}
+    ${morningHTML}
+    ${mealBlockHTML('lunch','午餐', d.lunch)}
+    ${mealBlockHTML('dinner','晚餐', d.dinner)}
+    ${hotelHTML}
+  `;
+}
+
+const FX_DEFAULT_RATE = 0.196;
+const FX_QUICK_AMOUNTS = [100, 500, 1000, 3000, 5000, 10000, 30000];
+
+function fxPanelHTML(){
+  const rows = FX_QUICK_AMOUNTS.map(jpy => `
+    <tr>
+      <td>¥ ${jpy.toLocaleString('zh-Hant-TW')}</td>
+      <td data-jpy="${jpy}">NT$ ${(jpy*FX_DEFAULT_RATE).toFixed(1)}</td>
+    </tr>`).join('');
+  return `
+    <div class="day-head">
+      <p class="d-num">工具</p>
+      <h2>日幣 ⇄ 台幣 快速換算</h2>
+      <p>輸入其中一邊的金額，另一邊自動幫你算好，方便在店裡直接看。</p>
+    </div>
+
+    <div class="fx-card">
+      <div class="fx-field">
+        <label>日幣</label>
+        <div class="fx-input-wrap">
+          <span class="fx-symbol">¥ JPY</span>
+          <input type="number" inputmode="decimal" id="fxJpy" value="1000" min="0">
+        </div>
+      </div>
+      <div class="fx-swap">⇄</div>
+      <div class="fx-field">
+        <label>台幣</label>
+        <div class="fx-input-wrap">
+          <span class="fx-symbol">NT$ TWD</span>
+          <input type="number" inputmode="decimal" id="fxTwd" placeholder="0" min="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="fx-rate-card">
+      <span>目前參考匯率：1 日圓 ≈</span>
+      <input type="number" id="fxRate" step="0.001" min="0" value="${FX_DEFAULT_RATE}">
+      <span>台幣</span>
+      <a class="fx-check" href="https://www.google.com/search?q=日圓+台幣+匯率" target="_blank" rel="noopener">查即時匯率 ↗</a>
+    </div>
+
+    <span class="meal-tag lunch">常用金額對照</span>
+    <table class="fx-table" id="fxTable">
+      <thead><tr><th>日幣</th><th>約合台幣</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <p class="ov-note">💱 上面是概略參考匯率，出發前可以先把匯率數字改成銀行或超商當天公告的實際匯率，換算會更準。</p>
+  `;
+}
+
+function overviewHTML(){
+  const rows = days.map(d => `
+    <button class="ov-item" data-goto="${d.id}">
+      <span class="ov-daynum">${d.num}</span>
+      <span class="ov-item-body">
+        <span class="ov-item-date">${d.date}（${d.weekday}）</span>
+        <p class="ov-item-tag">${d.tag}</p>
+        ${d.hotel ? `<p class="ov-item-hotel">🏨 ${d.hotel.name}</p>` : `<p class="ov-item-hotel">✈ 晚間飛回台北</p>`}
+      </span>
+      <span class="ov-chevron">${ICONS.chevron}</span>
+    </button>
+  `).join('');
+  return `
+    <p class="ov-intro">五天四夜的行程總覽，點任一天可以直接跳到當天的詳細時間表。</p>
+    <div class="ov-list">${rows}</div>
+    <p class="ov-note">👶 部分行程含孩子的放電行程（溜滑梯、沙灘），時間抓得比較鬆，可依現場狀況調整。</p>
+  `;
+}
+
+// ---- render ----
+const panelsEl = document.getElementById('panels');
+const navEl = document.getElementById('dayNavScroll');
+
+let panelsHTML = `<section class="panel active" id="panel-overview">${overviewHTML()}</section>`;
+panelsHTML += `<section class="panel" id="panel-fx">${fxPanelHTML()}</section>`;
+days.forEach(d => {
+  panelsHTML += `<section class="panel" id="panel-${d.id}">${dayPanelHTML(d)}</section>`;
+});
+panelsEl.innerHTML = panelsHTML;
+
+let navHTML = `<button class="tab" data-target="overview" aria-selected="true">總覽</button>`;
+navHTML += `<button class="tab" data-target="fx" aria-selected="false">匯率換算</button>`;
+days.forEach(d => {
+  navHTML += `<button class="tab" data-target="${d.id}" aria-selected="false">Day ${d.num}<span class="tab-date">${d.date.slice(5)}（${d.weekday}）</span></button>`;
+});
+navEl.innerHTML = navHTML;
+
+function fxUpdateTable(rate){
+  document.querySelectorAll('#fxTable [data-jpy]').forEach(td => {
+    const jpy = parseFloat(td.dataset.jpy);
+    td.textContent = 'NT$ ' + (jpy*rate).toFixed(1);
+  });
+}
+function fxGetRate(){
+  const r = parseFloat(document.getElementById('fxRate').value);
+  return (!isNaN(r) && r > 0) ? r : FX_DEFAULT_RATE;
+}
+function fxRecalcFromJpy(){
+  const rate = fxGetRate();
+  const jpy = parseFloat(document.getElementById('fxJpy').value);
+  document.getElementById('fxTwd').value = isNaN(jpy) ? '' : (Math.round(jpy*rate*10)/10);
+}
+function fxRecalcFromTwd(){
+  const rate = fxGetRate();
+  const twd = parseFloat(document.getElementById('fxTwd').value);
+  document.getElementById('fxJpy').value = isNaN(twd) ? '' : Math.round(twd/rate);
+}
+fxRecalcFromJpy();
+fxUpdateTable(FX_DEFAULT_RATE);
+
+panelsEl.addEventListener('input', e => {
+  if(e.target.id === 'fxJpy'){ fxRecalcFromJpy(); }
+  else if(e.target.id === 'fxTwd'){ fxRecalcFromTwd(); }
+  else if(e.target.id === 'fxRate'){ const rate = fxGetRate(); fxRecalcFromJpy(); fxUpdateTable(rate); }
+});
+
+function showPanel(target){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + target).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => {
+    t.setAttribute('aria-selected', t.dataset.target === target ? 'true' : 'false');
+  });
+  const activeTab = document.querySelector(`.tab[data-target="${target}"]`);
+  if(activeTab) activeTab.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+navEl.addEventListener('click', e => {
+  const btn = e.target.closest('.tab');
+  if(!btn) return;
+  showPanel(btn.dataset.target);
+});
+
+panelsEl.addEventListener('click', e => {
+  const btn = e.target.closest('[data-goto]');
+  if(!btn) return;
+  showPanel(btn.dataset.goto);
+});
+</script>
+</body>
+</html>
