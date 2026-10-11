@@ -414,6 +414,126 @@
     white-space:nowrap;
   }
 
+  /* Currency converter */
+  .fx-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-card);
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .fx-field label{
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .fx-input-wrap{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:10px 14px;
+    background:var(--sand);
+  }
+  .fx-input-wrap .fx-symbol{
+    font-weight:700;
+    color:var(--accent);
+    font-size:14px;
+    flex:0 0 auto;
+  }
+  .fx-input-wrap input{
+    flex:1;
+    min-width:0;
+    border:none;
+    background:transparent;
+    font-size:22px;
+    font-weight:700;
+    color:var(--ink);
+    font-family:inherit;
+    outline:none;
+  }
+  .fx-swap{
+    align-self:center;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:var(--sand);
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--accent);
+    font-size:14px;
+    font-weight:700;
+  }
+  .fx-rate-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:12px 14px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:16px;
+  }
+  .fx-rate-card input{
+    width:64px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:4px 8px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--ink);
+    background:var(--sand);
+    font-family:inherit;
+  }
+  .fx-rate-card a.fx-check{
+    margin-left:auto;
+    font-size:12px;
+    font-weight:700;
+    color:var(--accent);
+    text-decoration:none;
+    border:1px solid var(--accent);
+    padding:5px 10px;
+    border-radius:var(--radius-pill);
+    white-space:nowrap;
+  }
+  table.fx-table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-card);
+    overflow:hidden;
+    margin-bottom:16px;
+  }
+  table.fx-table th, table.fx-table td{
+    padding:10px 14px;
+    text-align:right;
+    font-size:14px;
+    border-bottom:1px solid var(--line);
+    color:var(--ink);
+  }
+  table.fx-table thead th{
+    color:var(--ink-soft);
+    font-weight:700;
+    font-size:12px;
+  }
+  table.fx-table th:first-child, table.fx-table td:first-child{
+    text-align:left;
+  }
+  table.fx-table td:first-child{color:var(--ink-soft);font-weight:500;}
+  table.fx-table tr:last-child td{border-bottom:none;}
+
   footer{
     padding:20px 0 40px;
     text-align:center;
@@ -686,6 +806,57 @@ function dayPanelHTML(d){
   `;
 }
 
+const FX_DEFAULT_RATE = 0.196;
+const FX_QUICK_AMOUNTS = [100, 500, 1000, 3000, 5000, 10000, 30000];
+
+function fxPanelHTML(){
+  const rows = FX_QUICK_AMOUNTS.map(jpy => `
+    <tr>
+      <td>¥ ${jpy.toLocaleString('zh-Hant-TW')}</td>
+      <td data-jpy="${jpy}">NT$ ${(jpy*FX_DEFAULT_RATE).toFixed(1)}</td>
+    </tr>`).join('');
+  return `
+    <div class="day-head">
+      <p class="d-num">工具</p>
+      <h2>日幣 ⇄ 台幣 快速換算</h2>
+      <p>輸入其中一邊的金額，另一邊自動幫你算好，方便在店裡直接看。</p>
+    </div>
+
+    <div class="fx-card">
+      <div class="fx-field">
+        <label>日幣</label>
+        <div class="fx-input-wrap">
+          <span class="fx-symbol">¥ JPY</span>
+          <input type="number" inputmode="decimal" id="fxJpy" value="1000" min="0">
+        </div>
+      </div>
+      <div class="fx-swap">⇄</div>
+      <div class="fx-field">
+        <label>台幣</label>
+        <div class="fx-input-wrap">
+          <span class="fx-symbol">NT$ TWD</span>
+          <input type="number" inputmode="decimal" id="fxTwd" placeholder="0" min="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="fx-rate-card">
+      <span>目前參考匯率：1 日圓 ≈</span>
+      <input type="number" id="fxRate" step="0.001" min="0" value="${FX_DEFAULT_RATE}">
+      <span>台幣</span>
+      <a class="fx-check" href="https://www.google.com/search?q=日圓+台幣+匯率" target="_blank" rel="noopener">查即時匯率 ↗</a>
+    </div>
+
+    <span class="meal-tag lunch">常用金額對照</span>
+    <table class="fx-table" id="fxTable">
+      <thead><tr><th>日幣</th><th>約合台幣</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <p class="ov-note">💱 上面是概略參考匯率，出發前可以先把匯率數字改成銀行或超商當天公告的實際匯率，換算會更準。</p>
+  `;
+}
+
 function overviewHTML(){
   const rows = days.map(d => `
     <button class="ov-item" data-goto="${d.id}">
@@ -710,16 +881,47 @@ const panelsEl = document.getElementById('panels');
 const navEl = document.getElementById('dayNavScroll');
 
 let panelsHTML = `<section class="panel active" id="panel-overview">${overviewHTML()}</section>`;
+panelsHTML += `<section class="panel" id="panel-fx">${fxPanelHTML()}</section>`;
 days.forEach(d => {
   panelsHTML += `<section class="panel" id="panel-${d.id}">${dayPanelHTML(d)}</section>`;
 });
 panelsEl.innerHTML = panelsHTML;
 
 let navHTML = `<button class="tab" data-target="overview" aria-selected="true">總覽</button>`;
+navHTML += `<button class="tab" data-target="fx" aria-selected="false">匯率換算</button>`;
 days.forEach(d => {
   navHTML += `<button class="tab" data-target="${d.id}" aria-selected="false">Day ${d.num}<span class="tab-date">${d.date.slice(5)}（${d.weekday}）</span></button>`;
 });
 navEl.innerHTML = navHTML;
+
+function fxUpdateTable(rate){
+  document.querySelectorAll('#fxTable [data-jpy]').forEach(td => {
+    const jpy = parseFloat(td.dataset.jpy);
+    td.textContent = 'NT$ ' + (jpy*rate).toFixed(1);
+  });
+}
+function fxGetRate(){
+  const r = parseFloat(document.getElementById('fxRate').value);
+  return (!isNaN(r) && r > 0) ? r : FX_DEFAULT_RATE;
+}
+function fxRecalcFromJpy(){
+  const rate = fxGetRate();
+  const jpy = parseFloat(document.getElementById('fxJpy').value);
+  document.getElementById('fxTwd').value = isNaN(jpy) ? '' : (Math.round(jpy*rate*10)/10);
+}
+function fxRecalcFromTwd(){
+  const rate = fxGetRate();
+  const twd = parseFloat(document.getElementById('fxTwd').value);
+  document.getElementById('fxJpy').value = isNaN(twd) ? '' : Math.round(twd/rate);
+}
+fxRecalcFromJpy();
+fxUpdateTable(FX_DEFAULT_RATE);
+
+panelsEl.addEventListener('input', e => {
+  if(e.target.id === 'fxJpy'){ fxRecalcFromJpy(); }
+  else if(e.target.id === 'fxTwd'){ fxRecalcFromTwd(); }
+  else if(e.target.id === 'fxRate'){ const rate = fxGetRate(); fxRecalcFromJpy(); fxUpdateTable(rate); }
+});
 
 function showPanel(target){
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
